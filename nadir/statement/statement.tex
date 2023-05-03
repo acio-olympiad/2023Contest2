@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{multicol}
+\usepackage[utf8]{inputenc}
+\usepackage[textwidth=460pt, voffset=0pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{ulem}
+\begin{document}
+\title{\vspace{-5ex}Nadir}
+\author{\vspace{-5ex}}
+\date{\vspace{-5ex}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{ACIO 2023 Contest 2.5}
+\rfoot{Page \thepage}
+
+\begin{center}
+\huge{Nadir}\small\\
+\vspace{5ex}
+\begin{tabular}{|c|c|} 
+\hline
+Time Limit & Memory Limit \\
+\hline
+1 second & 128 MB \\
+
+\hline
+\end{tabular}
+\end{center}
+\section*{Statement}
+
+There are $N$ towers of cubes in a row, numbered 1 to $N$ from left to right. The $i$th tower has $a_i$
+cubes in it. A row of towers is a {\it valley} if it can be split into two (possibly empty) sections where:
+\begin{itemize}
+\item The left section forms a non-increasing sequence, and
+\item The right section forms a non-decreasing sequence.
+\end{itemize}
+
+\sout{Unfortunately, due to the recent collapse of the cryptocurrency exchange FTX, we have lost our source of funding and cannot provide you with a diagram.}
+
+You are tasked with considering $Q$ scenarios: In the $i$th scenario, what is the fewest cubes you must
+add to turn the towers $1, \dots, k_i$ into a valley? You cannot remove any cubes.
+
+\section*{Input}
+
+\begin{itemize}
+\item The first line of input contains the integers $N$ and $Q$.
+\item The next line of input contains the space-separated integers $a_1, \dots, a_N$.
+\item The next line of input contains the space-separated integers $k_1, \dots, k_Q$.
+\end{itemize}
+
+\section*{Output}
+
+Output $Q$ lines, the $i$th of which is the answer for the $i$th scenario.
+
+\begin{multicols}{2}
+\section*{Sample Input 1}
+{\tt
+6 3\\
+4 2 3 1 6 6\\
+3 4 6
+}
+\columnbreak
+\section*{Sample Input 2}
+{\tt
+5 3\\
+1 2 3 2 1\\
+1 3 5
+}
+\end{multicols}
+\begin{multicols}{2}
+\section*{Sample Output 1}
+{\tt
+0\\
+1\\
+1
+}
+\columnbreak
+\section*{Sample Output 2}
+{\tt
+0\\
+0\\
+3
+}
+\end{multicols}
+
+\section*{Constraints}
+\begin{itemize}
+\item $1 \le N, Q \le 10^5$
+\item $1 \le a_i \le 10^9$
+\item $1 \le k_j \le N$
+\item All $k_j$ are unique and in ascending order.
+\end{itemize}
+
+\section*{Subtasks}
+\begin{tabular}{l*{6}{c}r}
+Number & Points & Additional constraints\\
+\hline
+1 & 25 & $Q = 1$ and $k_j = N$ \\
+2 & 26 & $a_i \le 10$ \\
+4 & 49 & No further constraints
+\end{tabular}
+\end{document}

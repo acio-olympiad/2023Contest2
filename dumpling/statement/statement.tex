@@ -1,0 +1,202 @@
+\documentclass{article}
+\usepackage{multicol}
+\usepackage[utf8]{inputenc}
+\usepackage[textwidth=460pt, voffset=0pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{minted}
+\begin{document}
+\title{\vspace{-5ex}Dumpling Robot}
+\author{\vspace{-5ex}}
+\date{\vspace{-5ex}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{ACIO 2023 Contest 2.5}
+\rfoot{Page \thepage}
+
+\begin{center}
+\huge{Dumpling Robot}\small\\
+\vspace{5ex}
+\begin{tabular}{|c|c|} 
+\hline
+Time Limit & Memory Limit \\
+\hline
+1 second & 128 MB \\
+
+\hline
+\end{tabular}
+\end{center}
+\section*{Statement}
+
+The year is 1998 and you are the proud entrepreneur of a new restaurant chain: {\it dumplingsgivemedumplingskevinpleasegivemedumplingskevinpleaseohmanireallywantsomedumplings.com}. Your all-you-can-eat dumpling restaurants are known for their dumpling robots, which autonomously make and serve dumplings.
+
+Your robots can expertly craft the most delicious dumplings, but you've run into a slight problem. Your robots produce dumplings too quickly and your customers' bowls will overflow if you pile too many of them on.
+
+Because of this, you have fitted your robot with a detector that can determine when the customer begins eating a dumpling, as well as which dumpling it is. However, this information is delayed and will only be made available to the robot $K$ timesteps after the event. \\
+
+\noindent Write code for your robot. Your objectives are to:
+\begin{itemize}
+\item Minimise the amount of time it takes for the customer to finish eating
+\item Minimise the number of dumplings that drop out of the bowl
+\end{itemize}
+
+This is an interactive problem. There are subtasks in which the customers will exhibit different behaviours. You do not need to implement one solution for all of the subtasks.
+
+\section*{Implementation}
+
+All of the functions will have declarations in {\tt dumpling.h}, which you will need to include in your C++ submission with {\tt \#include "dumpling.h"}. \\
+
+\noindent At the beginning of the simulation, the following function is called:
+\begin{minted}{cpp}
+void init(int S);
+\end{minted}
+where {\tt S} is the subtask number of the given test case. Note that you cannot serve dumplings during this phase. \\
+
+\noindent At each step of the simulation, the following function will be called:
+\begin{minted}{cpp}
+void step(int event);
+\end{minted}
+The parameter {\tt event} will contain the ID for the dumpling that was consumed since the last call to {\tt step}, or -1 if no dumpling was consumed. {\bf IDs are assigned sequentially.} \\
+
+\noindent Your task is to implement the two functions {\tt init} and {\tt step}.
+
+\section*{Library}
+
+To serve dumplings, call the following function:
+\begin{minted}{cpp}
+int serve();
+\end{minted}
+The function {\tt serve} will return an ID for the dumpling that was just served.
+
+\section*{Simulation details}
+
+Before the simulation starts, the simulator decides on a number $N$, the total supply of dumplings from the robot, as well as the bowl capacity $B$.
+
+At each timestep, when {\tt serve} is called and the bowl has available space for dumplings, the dumpling will be added to the bowl and a new ID will be assigned. The IDs of the dumplings are numbered sequentially ($1, 2, 3, \dots$). {\tt serve} can be called any number of times per step.
+
+After the $i$th call to {\tt step}, there is a chance the customer will consume the dumpling {\bf with the smallest ID} from the bowl. The ID of the dumpling will be passed to {\tt step} on the $(i+K)$th call to {\tt step}.
+
+Independently of this, after the $i$th call to {\tt step}, the bowl capacity may increase by one, decrease by one or stay the same. If the bowl capacity decreases when it is already full, then the {\bf dumpling with the largest ID} will drop out.
+
+If the customer tries to consume a dumpling in between timesteps and there are no dumplings, the customer will be considered {\it idle} until the next attempt.
+
+Dumplings that drop out will not be consumed by the customer.
+
+After exactly $N$ calls to {\tt serve} have been made, making additional calls to {\tt serve} will return -1 and be ignored by the simulator, indicating that the robot should stop serving dumplings and return. At this point, any dumplings remaining in the bowl will be consumed by the customer until there are none left. The simulation stops when all $N$ calls have been made and there are no dumplings left in the bowl.
+
+\section*{Constraints}
+For each scenario,
+\begin{itemize}
+\item $1 \le N \le 1000$
+\item $1 \le K \le 50$.
+\item The number of timesteps will not exceed $10^5$.
+\item The capacity of the bowl $B$ can fluctuate between 5 and 20.
+\item The rate at which the customer eats dumplings may change.
+\item The simulation does not adapt its behaviour to your queries.
+\end{itemize}
+
+\newpage
+
+\section*{Scoring}
+
+Your solution will be scored based on the following function:
+$$\mathrm{Score} = \mathrm{min}\left(1, \mathrm{max}\left(0, 0.2x, 8.2x - 7.2\right)\right) \times 100$$
+and $x = \frac{nt}{NT}$ where
+\begin{itemize}
+\item $N$ is the total number of dumplings
+\item $n$ is the number of dumplings consumed by the customer (i.e. not dropped out)
+\item $t$ is the number of timesteps that the customer spent {\it not idle}
+\item $T$ is the total number of timesteps.
+\end{itemize}
+\noindent That is, your score is determined using $x$ on two linear scales where $0$ is 0 points, $0.9$ is 18 points and $1.0$ is 100 points.
+
+Additionally, you will receive a score of zero if:
+\begin{itemize}
+\item your program exits unexpectedly, or
+\item your program prints anything to the standard output, or
+\item the simulation reaches the maximum number of timesteps, or
+\item your program exceeds the time/memory limits.
+\end{itemize}
+
+\noindent Your score for a subtask will be the minimum score over all test cases in that subtask, scaled down to the number of points for that subtask.
+
+\section*{Example}
+
+The following table shows an example interaction. Here, $N = 3$ and $K = 2$. Suppose the starting bowl size is 3.
+
+\begin{tabular}{ccc}
+Robot & Simulation & Explanation \\
+\hline
+ & calls {\tt init(4)} & Simulator initialises the interaction on subtask 4. \\
+returns from {\tt init} & & Simulator finishes setting up. \\
+ & calls {\tt step(-1)} & Simulator runs first call to step. \\
+calls {\tt serve()} & & Robot serves first dumpling. \\
+ & {\tt serve()} returns 1 & Dumpling ID 1 returned \\
+returns from {\tt step} & & Robot finishes its step. \\
+ & (silent) & Customer consumes dumpling 1. \\
+ & calls {\tt step(-1)} & Simulator runs second call to step. \\
+calls {\tt serve()} & & Robot serves second dumpling. \\
+ & {\tt serve()} returns 2 & Dumpling ID 2 returned \\
+returns from {\tt step} & & Robot finishes its step. \\
+ & (silent) & Bowl capacity decreases from 3 to 2. \\
+ & calls {\tt step(1)} & Simulator (on step) relays that dumpling 1 has been consumed. \\
+returns from {\tt step} & & Robot finishes its step. \\
+\end{tabular}
+
+\begin{tabular}{ccc}
+Robot & Simulation & Explanation \\
+\hline
+ & (silent) & Customer consumes dumpling 2. \\
+ & calls {\tt step(-1)} & Simulator runs fourth step. \\
+returns from {\tt step} & & Robot finishes its step. \\
+ & (silent) & Customer tries to consume a dumpling, but couldn't find one. \\
+ & calls {\tt step(2)} & Simulator runs fifth step. \\
+calls {\tt serve()} & & Robot serves third dumpling. \\
+ & {\tt serve()} returns 3 & Dumpling ID 3 returned \\
+calls {\tt serve()} & & Robot tries to serve fourth dumpling. \\
+ & {\tt serve()} returns -1 & No more dumplings; -1 returned \\
+returns from {\tt step} & & Robot finishes its step. \\
+ & (silent) & Customer consumes dumpling 2. \\
+ & End & Simulation ends. Score given is $0.15$ since $\frac{nt}{NT} = 0.75$.
+\end{tabular}
+
+\section*{Subtasks}
+\begin{tabular}{ccc}
+Number & Points & Additional constraints \\
+\hline
+1 & 30 & $K = 1$ and the capacity of the bowl will not change. \\
+2 & 30 & The capacity of the bowl will not change. \\
+3 & 40 & No further constraints.
+\end{tabular}
+
+\section*{Sample Grader}
+
+The sample package contains a sample grader, which will run a simulation for $M$ timesteps. The input to the grader should be of the form:
+\begin{itemize}
+\item First line containing $N$, $K$, $M$, $S$ and $B$
+\item $M$ lines, one for each timestep. Each line should contain two integers $a$ and $b$, where
+\begin{itemize}
+\item $a = 0$ for if the customer should not try and consume at that timestep
+\item $a = 1$ if the customer should try and consume at that timestep
+\item $b=-1$ for if the bowl size should decrease by 1 at that timestep
+\item $b=0$ for if the bowl size should not change at that timestep
+\item $b=1$ for if the bowl size should increase by 1 at that timestep
+\end{itemize}
+\end{itemize}
+
+The grader will also terminate early if no further simulation is required. The sample input for the interaction looks like
+
+\begin{minted}{text}
+3 2 5 4 3
+1 0
+0 -1
+1 0
+1 0
+1 0
+\end{minted}
+
+The package also contains {\tt dumpling.h} and a stub implementation. Compile your grader with:
+
+\begin{minted}{text}
+g++ -Wall -static -O2 -o dumpling sample_grader.cpp dumpling.cpp
+\end{minted}
+\end{document}

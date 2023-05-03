@@ -1,0 +1,11 @@
+#!/usr/bin/python3
+
+try:
+    import sys
+    with open(sys.argv[3]) as f:
+        a, b, c = f.readlines()
+    assert a.strip() == "confidence comes from failure"
+    assert c.strip() == "as you can see, i failed confidently"
+    print(float(b))
+except:
+    print(0)

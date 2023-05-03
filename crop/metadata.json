@@ -1,0 +1,15 @@
+{
+    "short_name": "acio23crop",
+    "problem_name": "Crop Allocation",
+    "subtask_points": [
+        8, 25, 27, 23, 27
+    ],
+    "timelimit": 1.0,
+    "memlimit": 128.0,
+    "cms": {
+        "name": "crop",
+        "timelimit": 1.0,
+        "memlimit": 128.0
+    }
+}
+
